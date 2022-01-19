@@ -99,6 +99,12 @@ def demo(args):
     disp1 = cv2.imread('datasets/KITTI/testing/disp_ganet_testing/000000_10.png', cv2.IMREAD_ANYDEPTH) / 256.0
     disp2 = cv2.imread('datasets/KITTI/testing/disp_ganet_testing/000001_10.png', cv2.IMREAD_ANYDEPTH) / 256.0
 
+    d1 = (fx / disp1).astype(np.uint16)
+    d2 = (fx / disp2).astype(np.uint16)
+    # print(d1.shape, d1.dtype, np.min(d1),np.max(d1))
+    cv2.imwrite("d1.png", d1)
+    cv2.imwrite("d2.png", d2)
+
     crop = 80
     img1 = img1[crop:]
     img2 = img2[crop:]
@@ -111,12 +117,6 @@ def demo(args):
     # disp1 = np.expand_dims(disp1, 0)
     # disp2 = np.expand_dims(disp2, 0)
     # intrinsics = np.expand_dims(intrinsics, 0)
-
-    # d1 = (fx / disp1).astype(np.uint16)
-    # d2 = (fx / disp2).astype(np.uint16)
-    # # print(d1.shape, d1.dtype, np.min(d1),np.max(d1))
-    # cv2.imwrite("d1.png", d1)
-    # cv2.imwrite("d2.png", d2)
 
     # depth1 = torch.from_numpy(fx / disp1).float().cuda().unsqueeze(0)
     # depth2 = torch.from_numpy(fx / disp2).float().cuda().unsqueeze(0)
