@@ -37,8 +37,8 @@ def prepare_images_and_depths(image1, image2, depth1, depth2):
 class Node:
     def __init__(self):
         # network
-        model_args = Namespace(network = "raft3d.raft3d", model = "raft3d.pth")
-        # model_args = Namespace(network = "raft3d.raft3d_bilaplacian", model = "raft3d_kitti.pth")
+        # model_args = Namespace(network = "raft3d.raft3d", model = "raft3d.pth")
+        model_args = Namespace(network = "raft3d.raft3d_bilaplacian", model = "raft3d_kitti.pth")
         RAFT3D = importlib.import_module(model_args.network).RAFT3D
         self.model = torch.nn.DataParallel(RAFT3D(model_args))
         self.model.load_state_dict(torch.load(model_args.model), strict=False)
@@ -75,9 +75,14 @@ class Node:
         colour = self.bridge.compressed_imgmsg_to_cv2(msg_colour, desired_encoding='passthrough')
         depth = self.bridge.compressed_imgmsg_to_cv2(msg_depth, desired_encoding='passthrough')
 
+        # max depth?
+        depth[depth==0] = 30 * 1000
+
         # convert to metre
-        # depth = depth / 1000.0
-        depth = depth.astype(float)
+        depth = depth / 1000.0
+        # depth = depth.astype(float) * 0.1 / 0.54
+        # kitti specific scale and baseline
+        depth = depth * 256 * 0.1 / 0.54
 
         # scale = 1 # out of memory
         # scale = 540/720
@@ -93,6 +98,8 @@ class Node:
         fy = msg_info.P[5] * scale
         cx = msg_info.P[2] * scale
         cy = msg_info.P[6] * scale
+
+        # print("intr", fx, fy, cx, cy)
 
         # print(colour.shape, colour.dtype, depth.shape, depth.dtype)
 
