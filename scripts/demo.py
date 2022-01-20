@@ -97,23 +97,41 @@ def demo(args):
     intrinsics = np.array([959.791, 956.9251, 696.0217, 224.1806])
     # http://www.cvlibs.net/datasets/kitti/setup.php
     b = 0.54 # array([ 0.53267121, -0.00526146,  0.00782809])
-    img1 = cv2.imread('datasets/KITTI/testing/image_2/000000_10.png')
-    img2 = cv2.imread('datasets/KITTI/testing/image_2/000000_11.png')
-    disp1 = cv2.imread('datasets/KITTI/testing/disp_ganet_testing/000000_10.png', cv2.IMREAD_ANYDEPTH) / 256.0
-    disp2 = cv2.imread('datasets/KITTI/testing/disp_ganet_testing/000001_10.png', cv2.IMREAD_ANYDEPTH) / 256.0
+    # img1 = cv2.imread('datasets/KITTI/testing/image_2/000000_10.png')
+    # img2 = cv2.imread('datasets/KITTI/testing/image_2/000000_11.png')
+    # disp1 = cv2.imread('datasets/KITTI/testing/disp_ganet_testing/000000_10.png', cv2.IMREAD_ANYDEPTH) / 256.0
+    # disp2 = cv2.imread('datasets/KITTI/testing/disp_ganet_testing/000001_10.png', cv2.IMREAD_ANYDEPTH) / 256.0
 
-    d1 = (b * intrinsics[0] / disp1).astype(np.uint16)
-    d2 = (b * intrinsics[0] / disp2).astype(np.uint16)
-    print("d1", d1.shape, d1.dtype, np.min(d1),np.max(d1))
-    cv2.imwrite("d1.png", d1)
-    cv2.imwrite("d2.png", d2)
+    # d1 = (b * intrinsics[0] / disp1).astype(np.uint16)
+    # d2 = (b * intrinsics[0] / disp2).astype(np.uint16)
+    # print("d1", d1.shape, d1.dtype, np.min(d1),np.max(d1))
+    # cv2.imwrite("d1.png", d1)
+    # cv2.imwrite("d2.png", d2)
 
-    crop = 80
-    img1 = img1[crop:]
-    img2 = img2[crop:]
-    disp1 = disp1[crop:]
-    disp2 = disp2[crop:]
-    intrinsics[3] -= crop
+    # crop = 80
+    # img1 = img1[crop:]
+    # img2 = img2[crop:]
+    # disp1 = disp1[crop:]
+    # disp2 = disp2[crop:]
+    # intrinsics[3] -= crop
+
+    intrinsics = np.array([612.4180297851562, 612.3189086914062, 640.6007080078125, 364.61968994140625])
+    img1 = cv2.imread('datasets/exp_nx_rot1/colour/colour_1632501498941948057.png')
+    img2 = cv2.imread('datasets/exp_nx_rot1/colour/colour_1632501498975283712.png')
+    z1 = cv2.imread('datasets/exp_nx_rot1/depth/depth_1632501498941948057.png', cv2.IMREAD_ANYDEPTH)# / 1000.0
+    z2 = cv2.imread('datasets/exp_nx_rot1/depth/depth_1632501498975283712.png', cv2.IMREAD_ANYDEPTH)# / 1000.0
+
+    print("z range", np.min(z1), np.max(z1))
+
+    maxdepth = 30
+    z1[z1==0] = maxdepth * 1000
+    z2[z2==0] = maxdepth * 1000
+
+    z1 = z1 / 1000.0
+    z2 = z2 * 1000.0
+
+    z1 = z1 * 256
+    z2 = z2 * 256
 
     # image1 = np.expand_dims(image1, 0)
     # image2 = np.expand_dims(image2, 0)
@@ -129,19 +147,21 @@ def demo(args):
 
     image1 = torch.from_numpy(img1).float().permute(2,0,1).cuda()
     image2 = torch.from_numpy(img2).float().permute(2,0,1).cuda()
-    disp1 = torch.from_numpy(disp1).float().cuda()
-    disp2 = torch.from_numpy(disp2).float().cuda()
+    # disp1 = torch.from_numpy(disp1).float().cuda()
+    # disp2 = torch.from_numpy(disp2).float().cuda()
     intrinsics = torch.from_numpy(intrinsics).float().cuda()
 
     image1 = image1.unsqueeze(0)
     image2 = image2.unsqueeze(0)
-    disp1 = disp1.unsqueeze(0)
-    disp2 = disp2.unsqueeze(0)
+    # disp1 = disp1.unsqueeze(0)
+    # disp2 = disp2.unsqueeze(0)
     intrinsics = intrinsics.unsqueeze(0)
 
     # img1 = image1[0].permute(1,2,0).cpu().numpy()
-    depth1 = DEPTH_SCALE * (b * intrinsics[0,0] / disp1)
-    depth2 = DEPTH_SCALE * (b * intrinsics[0,0] / disp2)
+    # depth1 = DEPTH_SCALE * (b * intrinsics[0,0] / disp1)
+    # depth2 = DEPTH_SCALE * (b * intrinsics[0,0] / disp2)
+    depth1 = DEPTH_SCALE * torch.from_numpy(z1).float().cuda().unsqueeze(0)
+    depth2 = DEPTH_SCALE * torch.from_numpy(z2).float().cuda().unsqueeze(0)
 
     # image1, image2, depth1, depth2 = prepare_images_and_depths(image1, image2, depth1, depth2)
     image1, image2, depth1, depth2, _ = prepare_images_and_depths_kitti(image1, image2, depth1, depth2)
