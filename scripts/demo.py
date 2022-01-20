@@ -82,6 +82,7 @@ def demo(args):
     model.cuda()
 
     fx, fy, cx, cy = (1050.0, 1050.0, 480.0, 270.0)
+    b = 1.0 # baseline in synthetic blender data
     img1 = cv2.imread('assets/image1.png')
     img2 = cv2.imread('assets/image2.png')
     disp1 = frame_utils.read_gen('assets/disp1.pfm')
@@ -94,14 +95,16 @@ def demo(args):
 
     # fx, fy, cx, cy = (959.791, 956.9251, 696.0217, 224.1806)
     intrinsics = np.array([959.791, 956.9251, 696.0217, 224.1806])
+    # http://www.cvlibs.net/datasets/kitti/setup.php
+    b = 0.54 # array([ 0.53267121, -0.00526146,  0.00782809])
     img1 = cv2.imread('datasets/KITTI/testing/image_2/000000_10.png')
     img2 = cv2.imread('datasets/KITTI/testing/image_2/000000_11.png')
     disp1 = cv2.imread('datasets/KITTI/testing/disp_ganet_testing/000000_10.png', cv2.IMREAD_ANYDEPTH) / 256.0
     disp2 = cv2.imread('datasets/KITTI/testing/disp_ganet_testing/000001_10.png', cv2.IMREAD_ANYDEPTH) / 256.0
 
-    d1 = (fx / disp1).astype(np.uint16)
-    d2 = (fx / disp2).astype(np.uint16)
-    # print(d1.shape, d1.dtype, np.min(d1),np.max(d1))
+    d1 = (b * intrinsics[0] / disp1).astype(np.uint16)
+    d2 = (b * intrinsics[0] / disp2).astype(np.uint16)
+    print("d1", d1.shape, d1.dtype, np.min(d1),np.max(d1))
     cv2.imwrite("d1.png", d1)
     cv2.imwrite("d2.png", d2)
 
@@ -137,8 +140,8 @@ def demo(args):
     intrinsics = intrinsics.unsqueeze(0)
 
     # img1 = image1[0].permute(1,2,0).cpu().numpy()
-    depth1 = DEPTH_SCALE * (intrinsics[0,0] / disp1)
-    depth2 = DEPTH_SCALE * (intrinsics[0,0] / disp2)
+    depth1 = DEPTH_SCALE * (b * intrinsics[0,0] / disp1)
+    depth2 = DEPTH_SCALE * (b * intrinsics[0,0] / disp2)
 
     # image1, image2, depth1, depth2 = prepare_images_and_depths(image1, image2, depth1, depth2)
     image1, image2, depth1, depth2, _ = prepare_images_and_depths_kitti(image1, image2, depth1, depth2)
