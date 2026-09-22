@@ -59,7 +59,7 @@ def loss_fn(flow2d_est, flow2d_rev, flow_gt, valid_mask, gamma=0.9):
 
 def fetch_dataloader(args):
     gpuargs = {'shuffle': True, 'num_workers': 4, 'drop_last' : True}
-    train_dataset = KITTI(do_augment=True, image_size=[256, 960])    
+    train_dataset = KITTI(do_augment=True, image_size=[256, 960])
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, **gpuargs)
     return train_loader
 
@@ -83,7 +83,7 @@ def train(args):
 
     model.cuda()
     model.eval()
-    
+
     logger = Logger()
 
     train_loader = fetch_dataloader(args)
@@ -105,11 +105,11 @@ def train(args):
 
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            
+
             optimizer.step()
             scheduler.step()
             logger.push(metrics)
-            
+
             total_steps += 1
 
             if total_steps % 5000 == 0:
@@ -130,9 +130,8 @@ if __name__ == '__main__':
 
     # model arguments
     parser.add_argument('--radius', type=int, default=32)
-    
+
     args = parser.parse_args()
 
     print(args)
     train(args)
-

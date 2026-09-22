@@ -39,7 +39,7 @@ def display(img, tau, phi):
 
 def prepare_images_and_depths(image1, image2, depth1, depth2, depth_scale=1.0):
     """ padding, normalization, and scaling """
-    
+
     ht, wd = image1.shape[-2:]
     pad_h = (-ht) % 8
     pad_w = (-wd) % 8

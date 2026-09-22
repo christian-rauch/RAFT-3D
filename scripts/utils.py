@@ -32,7 +32,7 @@ class Logger:
         metrics_data = [self.running_loss[k]/SUM_FREQ for k in sorted(self.running_loss.keys())]
         training_str = "[{:6d}] ".format(self.total_steps+1)
         metrics_str = ("{:10.4f}, "*len(metrics_data)).format(*metrics_data)
-        
+
         # print the training status
         print(training_str + metrics_str)
 

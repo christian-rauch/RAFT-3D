@@ -77,10 +77,10 @@ def train(args):
     model = torch.nn.DataParallel(RAFT3D(args))
     model.cuda()
     model.eval()
-    
+
     if args.ckpt is not None:
         model.load_state_dict(torch.load(args.ckpt), strict=False)
-   
+
     logger = Logger()
 
     train_loader = fetch_dataloader(args)
@@ -102,11 +102,11 @@ def train(args):
 
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            
+
             optimizer.step()
             scheduler.step()
             logger.push(metrics)
-            
+
             total_steps += 1
 
             if total_steps % 20000 == 0:
@@ -132,9 +132,8 @@ if __name__ == '__main__':
 
     if not os.path.isdir('checkpoints'):
         os.mkdir('checkpoints')
-    
+
     args = parser.parse_args()
 
     print(args)
     train(args)
-

@@ -23,7 +23,7 @@ class FPN(ResNet):
 
         self.norm1 = nn.BatchNorm2d(512)
         self.norm2 = nn.BatchNorm2d(512)
-        
+
     def _forward_impl(self, x):
         # See note [TorchScript super()]
 

@@ -30,7 +30,7 @@ MAX_FLOW = 250
 
 def prepare_images_and_depths(image1, image2, depth1, depth2, depth_scale=0.2):
     """ padding, normalization, and scaling """
-    
+
     ht, wd = image1.shape[-2:]
     pad_h = (-ht) % 8
     pad_w = (-wd) % 8
@@ -77,7 +77,7 @@ def test_sceneflow(model):
 
         # use transformation field to extract 2D and 3D flow
         flow2d_est, flow3d_est, _ = pops.induced_flow(Ts, depth1, intrinsics)
-        
+
         # unpad the flow fields / undo depth scaling
         flow2d_est = flow2d_est[:, :-4, :, :2]
         flow3d_est = flow3d_est[:, :-4] / DEPTH_SCALE
@@ -88,7 +88,7 @@ def test_sceneflow(model):
         # our evaluation (use all valid pixels)
         epe2d_all = epe2d.reshape(-1)[valid].double().cpu().numpy()
         epe3d_all = epe3d.reshape(-1)[valid].double().cpu().numpy()
-        
+
         count_all += epe2d_all.shape[0]
         metrics_all['epe2d'] += epe2d_all.sum()
         metrics_all['epe3d'] += epe3d_all.sum()
@@ -102,7 +102,7 @@ def test_sceneflow(model):
 
         epe2d_sampled = epe2d.reshape(-1).double().cpu().numpy()
         epe3d_sampled = epe3d.reshape(-1).double().cpu().numpy()
-        
+
         count_sampled += epe2d_sampled.shape[0]
         metrics_flownet3d['epe3d'] += epe3d_sampled.mean()
         metrics_flownet3d['5cm'] += (epe3d_sampled < .05).astype(np.float).mean()

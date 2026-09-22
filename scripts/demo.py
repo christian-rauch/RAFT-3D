@@ -73,7 +73,7 @@ def demo(args):
 
     image1, image2, depth1, depth2 = prepare_images_and_depths(image1, image2, depth1, depth2)
     Ts = model(image1, image2, depth1, depth2, intrinsics, iters=16)
-    
+
     # compute 2d and 3d from from SE3 field (Ts)
     flow2d, flow3d, _ = pops.induced_flow(Ts, depth1, intrinsics)
 
@@ -95,7 +95,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     demo(args)
-
-    
-
-
