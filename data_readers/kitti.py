@@ -66,7 +66,7 @@ class KITTIEval(data.Dataset):
         writeDispKITTI(disp1_path, disp1)
         writeDispKITTI(disp2_path, disp2)
         writeFlowKITTI(flow_path, flow)
-                        
+
     def __len__(self):
         return len(self.image1_list)
 
@@ -105,7 +105,7 @@ class KITTI(data.Dataset):
             self.augmentor = SparseAugmentor(image_size)
         else:
             self.augmentor = None
-        
+
         self.image1_list = sorted(glob(osp.join(root, "training", "image_2/*10.png")))
         self.image2_list = sorted(glob(osp.join(root, "training", "image_2/*11.png")))
 
@@ -127,7 +127,7 @@ class KITTI(data.Dataset):
                         K = np.array(row[1:], dtype=np.float32).reshape(3,3)
                         kvec = np.array([K[0,0], K[1,1], K[0,2], K[1,2]])
                         self.intrinsics_list.append(kvec)
-                        
+
     def __len__(self):
         return len(self.image1_list)
 
