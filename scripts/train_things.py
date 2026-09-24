@@ -58,7 +58,7 @@ def loss_fn(flow2d_est, flow2d_rev, flow_gt, valid_mask, gamma=0.9):
 
 
 def fetch_dataloader(args):
-    gpuargs = {'shuffle': True, 'num_workers': 4, 'drop_last' : True}
+    gpuargs = {'num_workers': 4, 'drop_last' : True}
     train_dataset = SceneFlow(do_augment=True, image_size=[368, 768])
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, **gpuargs)
     return train_loader
