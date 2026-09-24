@@ -2,7 +2,7 @@
 
 <center><img src="assets/raft3d.png" width="540" style="center"></center>
 
-[RAFT-3D: Scene Flow using Rigid-Motion Embeddings](https://arxiv.org/abs/2012.00726)  
+[RAFT-3D: Scene Flow using Rigid-Motion Embeddings](https://arxiv.org/abs/2012.00726)
 Zachary Teed and Jia Deng, CVPR 2021
 
 ```
@@ -72,7 +72,7 @@ python scripts/evaluation.py --network=raft3d.raft3d_bilaplacian --model=raft3d_
 
 ### KITTI Evaluation:
 
-First download the [KITTI Scene Flow dataset](http://www.cvlibs.net/datasets/kitti/eval_scene_flow.php). You also need to download disparity estimates from GA-Net [disp_ganet_training](https://drive.google.com/file/d/1LGpw2_d17jESAVxcl4ZaeoKisnqDOLlK/view?usp=sharing) and [disp_ganet_testing](https://drive.google.com/file/d/1_rP09NpCKEoxnbPF9_S88FHS6p6u3o6H/view?usp=sharing). Place the GA-Net estimates in the respective training and testing folders such that the directory structure is as follows
+First download the [KITTI Scene Flow](http://www.cvlibs.net/datasets/kitti/eval_scene_flow.php) [dataset](https://s3.eu-central-1.amazonaws.com/avg-kitti/data_scene_flow.zip), [development kit](https://s3.eu-central-1.amazonaws.com/avg-kitti/devkit_scene_flow.zip), and [calibration files](https://s3.eu-central-1.amazonaws.com/avg-kitti/data_scene_flow_calib.zip). You also need to download disparity estimates from GA-Net [disp_ganet_training](https://drive.google.com/file/d/1LGpw2_d17jESAVxcl4ZaeoKisnqDOLlK/view?usp=sharing) and [disp_ganet_testing](https://drive.google.com/file/d/1_rP09NpCKEoxnbPF9_S88FHS6p6u3o6H/view?usp=sharing). Place the GA-Net estimates in the respective training and testing folders such that the directory structure is as follows
 
 ```
 ├── datasets
@@ -95,7 +95,7 @@ python scripts/kitti_submission.py --network=raft3d.raft3d_bilaplacian --model=r
 
 ## Training
 
-Training requires a GPU with 24Gb of memory. First download the required datasets for training and evaluation. 
+Training requires a GPU with 24Gb of memory. First download the required datasets for training and evaluation.
 
 ### Training on FlyingThings3D
 ```
