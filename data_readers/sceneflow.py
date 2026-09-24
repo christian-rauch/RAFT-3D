@@ -108,7 +108,7 @@ class SceneFlow(data.Dataset):
     def add_flyingthings(self, mode='TRAIN'):
         root = osp.join(self.root, 'FlyingThings3D')
 
-        exclude = np.loadtxt('misc/exclude.txt', delimiter=' ', dtype=np.unicode_)
+        exclude = np.loadtxt('misc/exclude.txt', delimiter=' ', dtype=np.str_)
         exclude = set(exclude)
 
         # intrinsics
