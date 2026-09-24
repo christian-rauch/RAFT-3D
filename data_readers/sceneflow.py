@@ -81,18 +81,19 @@ class SceneFlow(data.Dataset):
 
             if use_flyingthings:
                 self.add_flyingthings()
-            print(len(self.image_list))
 
             if use_monkaa:
                 self.add_monkaa()
-            print(len(self.image_list))
 
             if use_driving:
                 self.add_driving()
-            print(len(self.image_list))
+
+            print(f"training samples: {len(self.image_list)}")
 
         elif self.mode == 'TEST':
             self.add_flyingthings()
+
+        assert len(self.image_list) != 0
 
     def read_camdata(self, cam_file):
         poses = []
