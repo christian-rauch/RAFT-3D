@@ -45,22 +45,22 @@ def read_camdata(cam_file):
                 R, t = pose[:3, :3], pose[:3, 3]
                 q = Rotation.from_matrix(R).as_quat()
                 poses.append(np.concatenate([t, q], 0))
-    
+
     return np.stack(poses, 0)
 
 class SceneFlow(data.Dataset):
     def __init__(self, image_size=None,
                  n_frames=2,
-                 mode='TRAIN', 
-                 do_augment=True, 
+                 mode='TRAIN',
+                 do_augment=True,
                  root='datasets',
-                 dstype='frames_cleanpass', 
-                 use_flyingthings=True, 
-                 use_monkaa=False, 
+                 dstype='frames_cleanpass',
+                 use_flyingthings=True,
+                 use_monkaa=False,
                  use_driving=False):
 
         self.init_seed = None
-        
+
         self.do_augment = do_augment
         self.n_frames = n_frames
         self.mode = mode
@@ -82,7 +82,7 @@ class SceneFlow(data.Dataset):
             if use_flyingthings:
                 self.add_flyingthings()
             print(len(self.image_list))
-            
+
             if use_monkaa:
                 self.add_monkaa()
             print(len(self.image_list))
@@ -103,7 +103,7 @@ class SceneFlow(data.Dataset):
                     pose = pose.reshape(4, 4).astype(np.float)
                     poses.append(pose)
         return poses
-                
+
 
     def add_flyingthings(self, mode='TRAIN'):
         root = osp.join(self.root, 'FlyingThings3D')
@@ -137,17 +137,17 @@ class SceneFlow(data.Dataset):
 
             for idir, fdir_forw, fdir_back, ddir_forw, ddir_back, zdir, cdir, ldir in \
                     zip(image_dirs, flow_dirs_forw, flow_dirs_back, delta_dirs_forw, delta_dirs_back, depth_dirs, cam_dirs, label_dirs):
-                
+
                 images = sorted(glob(osp.join(idir, '*.png')))
                 flows_forw = sorted(glob(osp.join(fdir_forw, '*.pfm')))
                 flows_back = sorted(glob(osp.join(fdir_back, '*.pfm')))
 
                 delta_forw = sorted(glob(osp.join(ddir_forw, '*.pfm')))
                 delta_back = sorted(glob(osp.join(ddir_back, '*.pfm')))
-                
+
                 depths = sorted(glob(osp.join(zdir, '*.pfm')))
                 labels = sorted(glob(osp.join(ldir, '*.pfm')))
-                
+
                 poses = read_camdata(osp.join(cdir, 'camera_data.txt'))
                 if len(poses) < len(images):
                     continue
@@ -172,7 +172,7 @@ class SceneFlow(data.Dataset):
                     self.pose_list += [[poses[i], poses[i-1]]]
                     self.depth_list += [[depths[i], depths[i-1]]]
 
-    
+
     def add_monkaa(self):
         root = osp.join(self.root, 'Monkaa')
 
@@ -197,7 +197,7 @@ class SceneFlow(data.Dataset):
 
             depth_dirs = sorted(glob(osp.join(root, 'disparity/*')))
             depth_dirs = sorted([osp.join(f, cam) for f in depth_dirs])
-            
+
             label_dirs = depth_dirs
 
             # label_dirs = sorted(glob(osp.join(root, 'object_index/*')))
@@ -206,17 +206,17 @@ class SceneFlow(data.Dataset):
             cam_dirs = sorted(glob(osp.join(root, 'camera_data/*')))
             for idir, fdir_forw, fdir_back, ddir_forw, ddir_back, zdir, cdir, ldir in \
                     zip(image_dirs, flow_dirs_forw, flow_dirs_back, delta_dirs_forw, delta_dirs_back, depth_dirs, cam_dirs, label_dirs):
-                
+
                 images = sorted(glob(osp.join(idir, '*.png')))
                 flows_forw = sorted(glob(osp.join(fdir_forw, '*.pfm')))
                 flows_back = sorted(glob(osp.join(fdir_back, '*.pfm')))
 
                 delta_forw = sorted(glob(osp.join(ddir_forw, '*.pfm')))
                 delta_back = sorted(glob(osp.join(ddir_back, '*.pfm')))
-                
+
                 depths = sorted(glob(osp.join(zdir, '*.pfm')))
                 labels = sorted(glob(osp.join(ldir, '*.pfm')))
-                
+
                 poses = read_camdata(osp.join(cdir, 'camera_data.txt'))
                 if len(poses) < len(images):
                     continue
@@ -270,17 +270,17 @@ class SceneFlow(data.Dataset):
                     fx = fy = 450.0
                 elif '35mm_focallength' in idir:
                     fx = fy = 1050.0
-                
+
                 images = sorted(glob(osp.join(idir, '*.png')))
                 flows_forw = sorted(glob(osp.join(fdir_forw, '*.pfm')))
                 flows_back = sorted(glob(osp.join(fdir_back, '*.pfm')))
 
                 delta_forw = sorted(glob(osp.join(ddir_forw, '*.pfm')))
                 delta_back = sorted(glob(osp.join(ddir_back, '*.pfm')))
-                
+
                 depths = sorted(glob(osp.join(zdir, '*.pfm')))
                 labels = sorted(glob(osp.join(ldir, '*.pfm')))
-                
+
                 poses = self.read_camdata(osp.join(cdir, 'camera_data.txt'))
 
                 if len(poses) < len(images):
@@ -329,7 +329,7 @@ class SceneFlow(data.Dataset):
         disp1 = frame_utils.read_gen(self.depth_list[index][0])
         disp2 = frame_utils.read_gen(self.depth_list[index][1])
         disp3 = disp1 + delta
-        
+
         depth1 = torch.from_numpy(intrinsics[0] / disp1).float()
         depth2 = torch.from_numpy(intrinsics[0] / disp2).float()
         depth3 = torch.from_numpy(intrinsics[0] / disp3).float()
@@ -384,15 +384,15 @@ class FlyingThingsTest(data.Dataset):
             disp2 = osp.join(root, 'disparity', split, subset, sequence, camera, "%04d.pfm" % (frame + 1))
 
             if camera == 'left':
-                flow = osp.join(root, 'optical_flow', split, subset, sequence, 
+                flow = osp.join(root, 'optical_flow', split, subset, sequence,
                     'into_future', camera, "OpticalFlowIntoFuture_%04d_L.pfm" % (frame))
-                disparity_change = osp.join(root, 'disparity_change', split, subset, 
+                disparity_change = osp.join(root, 'disparity_change', split, subset,
                     sequence, 'into_future', camera, "%04d.pfm" % (frame))
-            
+
             else:
-                flow = osp.join(root, 'optical_flow', split, subset, sequence, 
+                flow = osp.join(root, 'optical_flow', split, subset, sequence,
                     'into_future', camera, "OpticalFlowIntoFuture_%04d_R.pfm" % (frame))
-                disparity_change = osp.join(root, 'disparity_change', split, subset, 
+                disparity_change = osp.join(root, 'disparity_change', split, subset,
                     sequence, 'into_future', camera, "%04d.pfm" % (frame))
 
             datum = (image1, image2, disp1, disp2, flow, disparity_change, intrinsics, sampled_index)
@@ -403,9 +403,9 @@ class FlyingThingsTest(data.Dataset):
         return len(self.dataset_index)
 
     def __getitem__(self, index):
-        
+
         image1, image2, disp1, disp2, flow, disparity_change, intrinsics, sampled_index = self.dataset_index[index]
-        
+
         image1 = cv2.imread(image1)
         image2 = cv2.imread(image2)
         image1 = torch.from_numpy(image1).permute(2,0,1).float()
