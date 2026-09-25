@@ -166,7 +166,7 @@ class RAFT3D(nn.Module):
         batch_size, ch, ht, wd = image1.shape
         device = image1.device
 
-        y0, x0 = torch.meshgrid(torch.arange(ht//8), torch.arange(wd//8))
+        y0, x0 = torch.meshgrid(torch.arange(ht//8), torch.arange(wd//8), indexing='ij')
         coords0 = torch.stack([x0, y0], dim=-1).float()
         coords0 = coords0[None].repeat(batch_size, 1, 1, 1).to(device)
 

@@ -150,7 +150,7 @@ class GridFactor:
             dims = [torch.arange(d).cuda() for d in (H, W, N, M//4)]
 
             i0, j0, k0, h0 = \
-                [x.reshape(-1) for x in torch.meshgrid(*dims)]
+                [x.reshape(-1) for x in torch.meshgrid(*dims, indexing='ij')]
 
             # repeats are ok because edge weights get zeroed
             s = [W*(M//4), M//4, 1]

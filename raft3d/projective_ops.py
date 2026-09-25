@@ -27,7 +27,7 @@ def inv_project(depths, intrinsics):
 
     y, x = torch.meshgrid(
         torch.arange(ht).to(depths.device).float(), 
-        torch.arange(wd).to(depths.device).float())
+        torch.arange(wd).to(depths.device).float(), indexing='ij')
 
     X = depths * ((x - cx) / fx)
     Y = depths * ((y - cy) / fy)
@@ -71,7 +71,7 @@ def backproject_flow3d(flow2d, depth0, depth1, intrinsics):
     
     y0, x0 = torch.meshgrid(
         torch.arange(ht).to(depth0.device).float(), 
-        torch.arange(wd).to(depth0.device).float())
+        torch.arange(wd).to(depth0.device).float(), indexing='ij')
 
     x1 = x0 + flow2d[...,0]
     y1 = y0 + flow2d[...,1]
